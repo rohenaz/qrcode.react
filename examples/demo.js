@@ -44,7 +44,7 @@ class Demo extends React.Component {
   bgColor={"${this.state.bgColor}"}
   fgColor={"${this.state.fgColor}"}
   fgStyle={"${this.state.fgStyle}"}
-  fgGradient={${this.state.fgGradient}}
+  fgGradient={{color1: "${this.state.fgGradient.color1}", color2: "${this.state.fgGradient.color2}"}
   level={"${this.state.level}"}
   includeMargin={${this.state.includeMargin}}
   renderAs={"${this.state.renderAs}"}${imageSettingsCode}
