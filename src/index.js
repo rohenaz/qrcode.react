@@ -11,7 +11,8 @@ const ErrorCorrectLevel = require('qr.js/lib/ErrorCorrectLevel');
 
 // TODO: pull this off of the QRCode class type so it matches.
 type Modules = Array<Array<boolean>>;
-type Excavation = {|x: number, y: number, w: number, h: number|};
+type Excavation = {x: number, y: number, w: number, h: number};
+type Gradient = {color1: string, color2: string};
 
 // Convert from UTF-16, forcing the use of byte-mode encoding in our QR Code.
 // This allows us to encode Hanji, Kanji, emoji, etc. Ideally we'd do more
@@ -52,6 +53,7 @@ type QRProps = {
   level: $Keys<typeof ErrorCorrectLevel>,
   bgColor: string,
   fgColor: string,
+  fgGradient?: Gradient,
   style?: ?Object,
   includeMargin: boolean,
   imageSettings?: {
@@ -69,6 +71,7 @@ const DEFAULT_PROPS = {
   level: 'L',
   bgColor: '#FFFFFF',
   fgColor: '#000000',
+  fgGradient: undefined,
   includeMargin: false,
 };
 
@@ -385,6 +388,7 @@ class QRCodeSVG extends React.PureComponent<QRProps> {
       level,
       bgColor,
       fgColor,
+      fgGradient,
       includeMargin,
       imageSettings,
       ...otherProps
@@ -437,8 +441,22 @@ class QRCodeSVG extends React.PureComponent<QRProps> {
         width={size}
         viewBox={`0 0 ${numCells} ${numCells}`}
         {...otherProps}>
+        {fgGradient && (
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop
+                offset={0}
+                style={{stopColor: fgGradient.color1, stopOpacity: 1}}
+              />
+              <stop
+                offset={100}
+                style={{stopColor: fgGradient.color2, stopOpacity: 1}}
+              />
+            </linearGradient>
+          </defs>
+        )}
         <path fill={bgColor} d={`M0,0 h${numCells}v${numCells}H0z`} />
-        <path fill={fgColor} d={fgPath} />
+        <path fill={fgGradient ? 'url(#grad)' : fgColor} d={fgPath} />
         {image}
       </svg>
     );

@@ -10,6 +10,8 @@ class Demo extends React.Component {
     value: 'http://picturesofpeoplescanningqrcodes.tumblr.com/',
     size: 128,
     fgColor: '#000000',
+    fgStyle: 'S',
+    fgGradient: {color1: '#888888', color2: '#333333'},
     bgColor: '#ffffff',
     level: 'L',
     renderAs: 'svg',
@@ -41,6 +43,8 @@ class Demo extends React.Component {
   size={${this.state.size}}
   bgColor={"${this.state.bgColor}"}
   fgColor={"${this.state.fgColor}"}
+  fgStyle={"${this.state.fgStyle}"}
+  fgGradient={${this.state.fgGradient}}
   level={"${this.state.level}"}
   includeMargin={${this.state.includeMargin}}
   renderAs={"${this.state.renderAs}"}${imageSettingsCode}
@@ -73,15 +77,69 @@ class Demo extends React.Component {
         </div>
         <div>
           <label>
-            Foreground Color:
+            Foreground Style:
             <br />
-            <input
-              type="color"
-              onChange={(e) => this.setState({fgColor: e.target.value})}
-              value={this.state.fgColor}
-            />
+            <select
+              onChange={(e) => this.setState({fgStyle: e.target.value})}
+              value={this.state.fgStyle}>
+              <option value="S">Solid</option>
+              <option value="G">Gradient</option>
+            </select>
           </label>
         </div>
+        {this.state.fgStyle === 'G' && (
+          <div>
+            <label>
+              Gradient Color 1:
+              <br />
+              <input
+                type="color"
+                onChange={(e) =>
+                  this.setState({
+                    fgGradient: {
+                      color1: e.target.value,
+                      color2: this.state.fgGradient.color2,
+                    },
+                  })
+                }
+                value={this.state.fgGradient.color1}
+              />
+            </label>
+          </div>
+        )}
+         {this.state.fgStyle === 'G' && (
+          <div>
+            <label>
+              Gradient Color 2:
+              <br />
+              <input
+                type="color"
+                onChange={(e) =>
+                  this.setState({
+                    fgGradient: {
+                      color1: this.state.fgGradient.color1,
+                      color2: e.target.value,
+                    },
+                  })
+                }
+                value={this.state.fgGradient.color2}
+              />
+            </label>
+          </div>
+        )}
+        {this.state.fgStyle === 'S' && (
+          <div>
+            <label>
+              Foreground Color:
+              <br />
+              <input
+                type="color"
+                onChange={(e) => this.setState({fgColor: e.target.value})}
+                value={this.state.fgColor}
+              />
+            </label>
+          </div>
+        )}
         <div>
           <label>
             Error Level:
@@ -265,6 +323,9 @@ class Demo extends React.Component {
           level={this.state.level}
           renderAs={this.state.renderAs}
           includeMargin={this.state.includeMargin}
+          fgGradient={
+            this.state.fgStyle === 'G' ? this.state.fgGradient : undefined
+          }
           imageSettings={
             this.state.includeImage
               ? {
